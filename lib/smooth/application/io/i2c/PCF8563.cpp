@@ -20,6 +20,7 @@ limitations under the License.
 
 using namespace smooth::core;
 using namespace smooth::core::logging;
+using namespace smooth::core::rtc;
 
 namespace smooth::application::sensor
 {
@@ -75,37 +76,6 @@ namespace smooth::application::sensor
         data.push_back(decimal_to_bcd(static_cast<uint8_t>(rtc_time.years - 2000)));
 
         return write(address, data);
-    }
-
-    // Convert BCD to decimal
-    uint8_t PCF8563::bcd_to_decimal(uint8_t bcd)
-    {
-        return static_cast<uint8_t>((10 * ((bcd & 0xf0) >> 4)) + (bcd & 0xf));
-    }
-
-    // Convert decimal to BCD
-    uint8_t PCF8563::decimal_to_bcd(uint8_t decimal)
-    {
-        return static_cast<uint8_t>(((decimal / 10) << 4) | (decimal % 10));
-    }
-
-    // The number of days in the month
-    uint8_t PCF8563::number_of_days_in_month(Month month, uint16_t year)
-    {
-        uint8_t days = 31;
-
-        if ((month == Month::April) | (month == Month::June) | (month == Month::September) | (month == Month::November))
-        {
-            days = 30;
-        }
-
-        if (month == Month::February)
-        {
-            // if leap year then days = 29 otherwise days = 28
-            days = ((year % 4 == 0 && year % 100 != 0) | (year % 400 == 0)) ? 29 : 28;
-        }
-
-        return days;
     }
 
     // Get alarm time
@@ -188,52 +158,5 @@ namespace smooth::application::sensor
         data.push_back(rd_data[0] & 0x17);
 
         return res & write(address, data);
-    }
-
-    // Get 12 hour time string
-    std::string PCF8563::get_12hr_time_string(uint8_t hours_24, uint8_t minutes, uint8_t seconds)
-    {
-        std::string hrs_str = hours_24 == 0 ? std::to_string(12) : std::to_string(hours_24 % 12);
-        std::string am_pm_str = hours_24 < 12 ? " AM" : " PM";
-
-        return hrs_str + add_colon_zero_padding(minutes) + add_colon_zero_padding(seconds) + am_pm_str;
-    }
-
-    // Get 24 hour time string
-    std::string PCF8563::get_24hr_time_string(uint8_t hours_24, uint8_t minutes, uint8_t seconds)
-    {
-        return std::to_string(hours_24) + add_colon_zero_padding(minutes) + add_colon_zero_padding(seconds);
-    }
-
-    // Add colon and zero padding to number
-    std::string PCF8563::add_colon_zero_padding(uint8_t time)
-    {
-        return time < 10 ? ":0" + std::to_string(time) : ":" + std::to_string(time);
-    }
-
-    // Validate time
-    void PCF8563::validate_time(uint8_t& time, std::string err_msg, uint8_t min_limit, uint8_t max_limit)
-    {
-        if ((time > max_limit) | (time < min_limit))
-        {
-            Log::error(TAG,
-            "Error - {} must be between {} and {}, setting to {}",
-            err_msg,
-            min_limit,
-            max_limit,
-            min_limit);
-
-            time = min_limit;
-        }
-    }
-
-    // Validate year
-    void PCF8563::validate_year(uint16_t& year)
-    {
-        if ((year > 2099) | (year < 2000))
-        {
-            Log::error(TAG, "Error - RTC year must be between 2000 and 2009, setting to 2000");
-            year = 2000;
-        }
     }
 }
