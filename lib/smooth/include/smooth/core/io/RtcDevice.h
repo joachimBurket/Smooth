@@ -22,7 +22,7 @@ limitations under the License.
 #include <string>
 #include <iostream>
 
-namespace smooth::core::rtc {
+namespace smooth::core::io::rtc {
 
 enum class DayOfWeek : uint8_t {
     Sunday,
@@ -119,6 +119,52 @@ struct AlarmTime {
     }
 };
 
+/// BCD to decimal
+/// \param bcd The bcd value to be convert to decimal
+/// \return Return the decimal value of bcd
+uint8_t bcd_to_decimal(uint8_t bcd);
+
+/// Decimal to BCD
+/// \param decimal The decimal value to be converted to BCD
+/// \return Return the BCD value of decimal
+uint8_t decimal_to_bcd(uint8_t decimal);
+
+/// Number of days in a month
+/// \param month The month used to determine the number of days in the month
+/// \param year The year used to determine the number of days in the month
+/// \return Return the number of days in the month
+uint8_t number_of_days_in_month(Month month, uint16_t year);
+
+/// Add leading colon and zero padding if necessary
+/// \param time The time unit to add colon and pad with zero if necessary
+/// \return Return the colon and zero padded number in string format
+std::string add_colon_zero_padding(uint8_t time);
+
+/// Get the 12 hour time string
+/// \param hours_24 The decimal 24 hours time
+/// \param minutes The decimal minutes time
+/// \param seconds The decimal seconds time
+/// \return Return the formated time string - hr:min:sec am/pm
+std::string get_12hr_time_string(uint8_t hours_24, uint8_t minutes, uint8_t seconds);
+
+/// Get the 24 hour time string
+/// \param hours_24 The decimal 24 hours time
+/// \param minutes The decimal minutes time
+/// \param seconds The decimal seconds time
+/// \return Return the formated time string - hr:min:sec
+std::string get_24hr_time_string(uint8_t hours_24, uint8_t minutes, uint8_t seconds);
+
+/// Validate the unit of time
+/// \param time The unit of time to validate
+/// \param err_msg The text string to place at the start of the error message
+/// \param min_limit The minimum time unit amount
+/// \param max_limit The maximum time unit amoint
+void validate_time(uint8_t& time, std::string err_msg, uint8_t min_limit, uint8_t max_limit);
+
+/// Validate year
+/// \param year The year value that will be validated
+void validate_year(uint16_t& year);
+
 struct RTCDevice {
     public:
         virtual ~RTCDevice() = default;
@@ -132,53 +178,6 @@ struct RTCDevice {
         /// \param rtc_time The RtcTime struct that contains the time data
         /// \return true on success, false on failure.
         virtual bool set_rtc_time(RtcTime& rtc_time) = 0;
-
-    protected:
-        /// BCD to decimal
-        /// \param bcd The bcd value to be convert to decimal
-        /// \return Return the decimal value of bcd
-        uint8_t bcd_to_decimal(uint8_t bcd);
-
-        /// Decimal to BCD
-        /// \param decimal The decimal value to be converted to BCD
-        /// \return Return the BCD value of decimal
-        uint8_t decimal_to_bcd(uint8_t decimal);
-
-        /// Number of days in a month
-        /// \param month The month used to determine the number of days in the month
-        /// \param year The year used to determine the number of days in the month
-        /// \return Return the number of days in the month
-        uint8_t number_of_days_in_month(Month month, uint16_t year);
-
-        /// Add leading colon and zero padding if necessary
-        /// \param time The time unit to add colon and pad with zero if necessary
-        /// \return Return the colon and zero padded number in string format
-        std::string add_colon_zero_padding(uint8_t time);
-
-        /// Get the 12 hour time string
-        /// \param hours_24 The decimal 24 hours time
-        /// \param minutes The decimal minutes time
-        /// \param seconds The decimal seconds time
-        /// \return Return the formated time string - hr:min:sec am/pm
-        std::string get_12hr_time_string(uint8_t hours_24, uint8_t minutes, uint8_t seconds);
-
-        /// Get the 24 hour time string
-        /// \param hours_24 The decimal 24 hours time
-        /// \param minutes The decimal minutes time
-        /// \param seconds The decimal seconds time
-        /// \return Return the formated time string - hr:min:sec
-        std::string get_24hr_time_string(uint8_t hours_24, uint8_t minutes, uint8_t seconds);
-
-        /// Validate the unit of time
-        /// \param time The unit of time to validate
-        /// \param err_msg The text string to place at the start of the error message
-        /// \param min_limit The minimum time unit amount
-        /// \param max_limit The maximum time unit amoint
-        void validate_time(uint8_t& time, std::string err_msg, uint8_t min_limit, uint8_t max_limit);
-
-        /// Validate year
-        /// \param year The year value that will be validated
-        void validate_year(uint16_t& year);
 };
 
 }

@@ -63,6 +63,7 @@ limitations under the License.
 #include "smooth/core/SystemStatistics.h"
 
 using namespace smooth::core;
+using namespace smooth::core::io;
 using namespace std::chrono;
 using namespace smooth::application::sensor;
 
@@ -76,7 +77,7 @@ namespace i2c_rtc3231_test
                              false,                           // SCL internal pullup NOT enabled
                              GPIO_NUM_21,                     // SDA pin
                              false,                           // SDA internal pullup NOT enabled
-                             400 * 1000)                      // clock frequency - 400kHz
+                             400 * 1000)                     // clock frequency - 400kHz
     {
     }
 
@@ -174,7 +175,7 @@ namespace i2c_rtc3231_test
                       tm.years,
                       rtc::get_24hr_time_string(tm.hours24, tm.minutes, tm.seconds));
         }
-        else
+        else   
         {
             Log::error(TAG, "Error reading RTC time or oscillator has stopped");
         }

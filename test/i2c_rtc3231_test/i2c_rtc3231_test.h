@@ -15,12 +15,16 @@ limitations under the License.
 
 #include "smooth/core/Application.h"
 #include "smooth/core/task_priorities.h"
+#include "smooth/core/io/InterruptInput.h"
+#include "smooth/core/ipc/ISRTaskEventQueue.h"
+#include "smooth/core/ipc/IEventListener.h"
 #include "smooth/core/io/i2c/Master.h"
 #include "smooth/application/io/i2c/DS3231.h"
 
 namespace i2c_rtc3231_test
 {
     class App : public smooth::core::Application
+                //public smooth::core::ipc::IEventListener<smooth::core::io::InterruptInputEvent>
     {
         public:
             App();
@@ -48,6 +52,14 @@ namespace i2c_rtc3231_test
             bool is_alarm2_active();
 
             void clear_alarm2_active();
+
+            //void event(const smooth::core::io::InterruptInputEvent& value) override;
+
+        protected:
+            //using IntrQueue = smooth::core::ipc::ISRTaskEventQueue<smooth::core::io::InterruptInputEvent, 5>;
+            //std::shared_ptr<IntrQueue> queue;
+            //smooth::core::io::InterruptInput input;
+
         private:
             void init_i2c_rtc3231();
 

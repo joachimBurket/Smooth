@@ -20,7 +20,7 @@ limitations under the License.
 
 using namespace smooth::core;
 using namespace smooth::core::logging;
-using namespace smooth::core::rtc;
+using namespace smooth::core::io::rtc;
 
 namespace smooth::application::sensor
 {

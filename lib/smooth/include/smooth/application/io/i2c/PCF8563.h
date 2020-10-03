@@ -18,12 +18,12 @@ limitations under the License.
 
 #include "smooth/core/io/i2c/I2CMasterDevice.h"
 #include "smooth/core/util/FixedBuffer.h"
-#include "smooth/core/rtc/RtcDevice.h"
+#include "smooth/core/io/RtcDevice.h"
 
 namespace smooth::application::sensor
 {
     class PCF8563
-        : public core::io::i2c::I2CMasterDevice, core::rtc::RTCDevice
+        : public core::io::i2c::I2CMasterDevice, core::io::rtc::RTCDevice
     {
         public:
             enum class Rtc8563Register : uint8_t
@@ -51,22 +51,22 @@ namespace smooth::application::sensor
             /// Get the rtc time
             /// \param rtc_time The RtcTime struct that will contain the time data
             /// \return true on success, false on failure.
-            bool get_rtc_time(core::rtc::RtcTime& rtc_time) override;
+            bool get_rtc_time(core::io::rtc::RtcTime& rtc_time) override;
 
             /// Set the rtc time
             /// \param rtc_time The RtcTime struct that contains the time data
             /// \return true on success, false on failure.
-            bool set_rtc_time(core::rtc::RtcTime& rtc_time) override;
+            bool set_rtc_time(core::io::rtc::RtcTime& rtc_time) override;
 
             /// Get the alarm time
             /// \param alarm_time The AlarmTime struct that will contain the time data
             /// \return true on success, false on failure.
-            bool get_alarm_time(core::rtc::AlarmTime& alarm_time);
+            bool get_alarm_time(core::io::rtc::AlarmTime& alarm_time);
 
             /// Set the alarm time
             /// \param alarm_time The AlarmTime struct that contains the time data
             /// \return true on success, false on failure.
-            bool set_alarm_time(core::rtc::AlarmTime& alarm_time);
+            bool set_alarm_time(core::io::rtc::AlarmTime& alarm_time);
 
             /// Is alarm flag active - poll this function to see if alarm time has triggered
             /// \param alarm_flag If true alarm is active if false alarm id decactivated

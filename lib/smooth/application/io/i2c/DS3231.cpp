@@ -22,7 +22,7 @@ limitations under the License.
 
 using namespace smooth::core;
 using namespace smooth::core::logging;
-using namespace smooth::core::rtc;
+using namespace smooth::core::io::rtc;
 
 namespace smooth::application::sensor
 {
@@ -287,16 +287,18 @@ namespace smooth::application::sensor
     }
 
     // Enable/Disable 32khz output
-    bool DS3231::set_32khz_output(const bool on)
+    bool DS3231::enable_32khz_output(const bool on)
     {
+        bool res;
         if (on)
         {
-            return set_reg_bits(Rtc3231Registers::Status, static_cast<uint8_t>(Rtc3231StatusRegisterBits::EN32KHZ));
+            res = set_reg_bits(Rtc3231Registers::Status, static_cast<uint8_t>(Rtc3231StatusRegisterBits::EN32KHZ));
         }
         else
         {
-            return clear_reg_bits(Rtc3231Registers::Status, static_cast<uint8_t>(Rtc3231StatusRegisterBits::EN32KHZ));
+            res = clear_reg_bits(Rtc3231Registers::Status, static_cast<uint8_t>(Rtc3231StatusRegisterBits::EN32KHZ));
         }
+        return res;
     }
 
     // Set a register's value
@@ -351,14 +353,16 @@ namespace smooth::application::sensor
     // Choose the mode of the INT/SQW output (either alarms interrupt or Square Wave)
     bool DS3231::set_intr_sqw_mode(const uint8_t mode)
     {
+        bool res;
         if (mode)
         {
-            return set_reg_bits(Rtc3231Registers::Control, static_cast<uint8_t>(Rtc3231ControlRegisterBits::INTCN));
+            res = set_reg_bits(Rtc3231Registers::Control, static_cast<uint8_t>(Rtc3231ControlRegisterBits::INTCN));
         }
         else
         {
-            return clear_reg_bits(Rtc3231Registers::Control, static_cast<uint8_t>(Rtc3231ControlRegisterBits::INTCN));
+            res = clear_reg_bits(Rtc3231Registers::Control, static_cast<uint8_t>(Rtc3231ControlRegisterBits::INTCN));
         }
+        return res;
     }
 
     // Set the Square Wave frequency

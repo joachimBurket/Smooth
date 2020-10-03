@@ -16,27 +16,16 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-// DS3231 Temperature-Compensated Crystal Oscillator (TCXO) RTC module
-//
-// Inspired from https://github.com/rodan/ds3231
-//
-// The Library implements the following features:
-// - set and get RTC time
-// - enable/disable 32kHz output
-// - set square wave frequency and enable/disable the output
-// - set and get the alarm1 and alarm2 times, enable/disable the output interrupts and clear them
-//
-
 #pragma once
 
 #include "smooth/core/io/i2c/I2CMasterDevice.h"
 #include "smooth/core/util/FixedBuffer.h"
-#include "smooth/core/rtc/RtcDevice.h"
+#include "smooth/core/io/RtcDevice.h"
 
 namespace smooth::application::sensor
 {
     class DS3231
-            : public core::io::i2c::I2CMasterDevice, core::rtc::RTCDevice
+            : public core::io::i2c::I2CMasterDevice, core::io::rtc::RTCDevice
     {
         public:
             enum class Rtc3231Registers : uint8_t
@@ -86,10 +75,10 @@ namespace smooth::application::sensor
 
             enum class Rtc3231SquareWaveFreqs : uint8_t
             {
-                    F1HZ = 0,   // 1Hz
-                    F1KHZ,      // 1.024 kHz
-                    F4KHZ,      // 4.096 kHz
-                    F8KHZ,      // 8.192 kHz
+                    FREQ_1HZ = 0,   // 1Hz
+                    FREQ_1KHZ,      // 1.024 kHz
+                    FREQ_4KHZ,      // 4.096 kHz
+                    FREQ_8KHZ,      // 8.192 kHz
             };
 
             DS3231(i2c_port_t port, uint8_t address, std::mutex& guard);
@@ -100,13 +89,13 @@ namespace smooth::application::sensor
 
             /// Get the rtc time
             /// \param rtc_time The RtcTime struct that will contain the time data
-            /// \return true on success, false on failure.
-            bool get_rtc_time(core::rtc::RtcTime& rtc_time) override;
+            /// \return true on success, false on failure or if oscillator has stopped (unconsistant rtc time)
+            bool get_rtc_time(core::io::rtc::RtcTime& rtc_time) override;
 
             /// Set the rtc time
             /// \param rtc_time The RtcTime struct that contains the time data
             /// \return true on success, false on failure.
-            bool set_rtc_time(core::rtc::RtcTime& rtc_time) override;
+            bool set_rtc_time(core::io::rtc::RtcTime& rtc_time) override;
 
             /*******************************************************************************************************************
              * RTC alarms 1 and 2 functions
@@ -115,12 +104,12 @@ namespace smooth::application::sensor
             /// Get the alarm1 time
             /// \param alarm_time The AlarmTime struct that will contain the time data
             /// \return true on success, false on failure.
-            bool get_alarm1_time(core::rtc::AlarmTime& alarm_time);
+            bool get_alarm1_time(core::io::rtc::AlarmTime& alarm_time);
 
             /// Set the alarm1 time
             /// \param alarm_time The AlarmTime struct that contains the time data
             /// \return true on success, false on failure.
-            bool set_alarm1_time(core::rtc::AlarmTime& alarm_time);
+            bool set_alarm1_time(core::io::rtc::AlarmTime& alarm_time);
 
             /// Enable the alarm1 interrupt (if INT/SQW is in INT mode, alarm1 flag drives the ouptut)
             /// \return true on success, false on failure.
@@ -142,12 +131,12 @@ namespace smooth::application::sensor
             /// Get the alarm2 time
             /// \param alarm_time The AlarmTime struct that will contain the time data
             /// \return true on success, false on failure.
-            bool get_alarm2_time(core::rtc::AlarmTime& alarm_time);
+            bool get_alarm2_time(core::io::rtc::AlarmTime& alarm_time);
 
             /// Set the alarm2 time
             /// \param alarm_time The AlarmTime struct that contains the time data
             /// \return true on success, false on failure.
-            bool set_alarm2_time(core::rtc::AlarmTime& alarm_time);
+            bool set_alarm2_time(core::io::rtc::AlarmTime& alarm_time);
 
             /// Enable the alarm2 interrupt (if INT/SQW is in INT mode, alarm2 flag drives the ouptut)
             /// \return true on success, false on failure.
@@ -185,6 +174,7 @@ namespace smooth::application::sensor
              ******************************************************************************************************************/
 
             /// Set the INT/SQW pin mode
+            /// TODO: Remove this function and automatically change the bit on `enable_square_wave_freq()` and `enable_alarm_intr()` functions? 
             /// \param mode If 1, alarms flags drive the output. If 0, Square Wave enabled on the output.
             /// \return true on success, false on failure.
             bool set_intr_sqw_mode(const uint8_t mode);
@@ -192,7 +182,7 @@ namespace smooth::application::sensor
             /// Enable/Disable the 32kHz output
             /// \param on The output state
             /// \return true on success, false on failure.
-            bool set_32khz_output(const bool on);
+            bool enable_32khz_output(const bool on);
         private:
             /*******************************************************************************************************************
              * RTC registers helpers
