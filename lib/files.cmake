@@ -93,7 +93,7 @@ set(SMOOTH_SOURCES
         ${smooth_dir}/core/network/Wifi.cpp
         ${smooth_dir}/core/sntp/Sntp.cpp
         ${smooth_dir}/core/SystemStatistics.cpp
-        ${smooth_dir}/core/rtc/rtc.cpp
+        ${smooth_dir}/core/rtc/RtcDevice.cpp
         ${smooth_dir}/core/Task.cpp
         ${smooth_dir}/core/timer/ElapsedTime.cpp
         ${smooth_dir}/core/timer/Timer.cpp
@@ -189,7 +189,6 @@ set(SMOOTH_SOURCES
         ${smooth_inc_dir}/core/network/Wifi.h
         ${smooth_inc_dir}/core/sntp/Sntp.h
         ${smooth_inc_dir}/core/sntp/TimeSyncEvent.h
-        ${smooth_inc_dir}/core/rtc/rtc.h
         ${smooth_inc_dir}/core/rtc/RtcDevice.h
         ${smooth_inc_dir}/core/SystemStatistics.h
         )
