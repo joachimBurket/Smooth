@@ -18,9 +18,6 @@ limitations under the License.
 
 #pragma once
 
-#include <cstdint>
-#include <string>
-#include <iostream>
 
 namespace smooth::core::io::rtc {
 
@@ -56,67 +53,38 @@ static const constexpr char *MonthStrings[] =
         {"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"};
 
 struct RtcTime {
-    uint8_t seconds;        // 0-59
-    uint8_t minutes;        // 0-59
-    uint8_t hours24;        // 0-23
-    uint8_t days;           // 1-31 depending upon month
-    DayOfWeek weekdays;     // Sunday-Saturday
-    Month months;           // January-December
-    uint16_t years;         // 2000-2099
-
+    uint8_t seconds = 0;                    // 0-59
+    uint8_t minutes = 0;                    // 0-59
+    uint8_t hours24 = 0;                    // 0-23
+    uint8_t days = 1;                       // 1-31 depending upon month
+    DayOfWeek weekdays = DayOfWeek::Sunday; // Sunday-Saturday
+    Month months = Month::January;          // January-December
+    uint16_t years = 2000;                  // 2000-2099
+    
     // Compare two RtcTimes
-    inline bool operator==(const RtcTime &rhs) {
-        return (this->seconds == rhs.seconds) && (this->minutes == rhs.minutes)
-            && (this->hours24 == rhs.hours24) && (this->days == rhs.days)
-            && (this->weekdays == rhs.weekdays) && (this->months == rhs.months)
-            && (this->years == rhs.years);
-    }
-
+    bool operator==(const RtcTime &rhs);
+    
     // Print RtcTime
-    friend std::ostream &operator<<( std::ostream &output, const RtcTime &time ) {
-        output << DayOfWeekStrings[static_cast<uint8_t>(time.weekdays)] << " " << +time.days << " "
-        << MonthStrings[static_cast<uint8_t>(time.months)] << " " << time.years << ", "
-        << +time.hours24 << "h" << +time.minutes << "m" << +time.seconds << "s";
-        return output;
-    }
+    friend std::ostream &operator<<( std::ostream &output, const RtcTime &time );
 };
 
 struct AlarmTime {
-    bool ena_alrm_second;   // true = enable, false = disable
-    uint8_t second;         // 0-59
-    bool ena_alrm_minute;   // true = enable, false = disable
-    uint8_t minute;         // 0-59
-    bool ena_alrm_hour;     // true = enable, false = disable
-    uint8_t hour24;         // 0-23
-    bool ena_alrm_day;      // true = enable, false = disable
-    uint8_t day;            // 1-31 depending upon month
-    bool ena_alrm_weekday;  // true = enable, false = disable
-    DayOfWeek weekday;      // Sunday-Saturday
-
-    // Default values
-    AlarmTime()
-        : ena_alrm_second(false), second(0), ena_alrm_minute(false), minute(0), ena_alrm_hour(false),
-          hour24(0), ena_alrm_day(false), day(1), ena_alrm_weekday(false), weekday(DayOfWeek::Monday)
-    {}
+    bool ena_alrm_second = false;           // true = enable, false = disable
+    uint8_t second = 0;                     // 0-59
+    bool ena_alrm_minute = false;           // true = enable, false = disable
+    uint8_t minute = 0;                     // 0-59
+    bool ena_alrm_hour = false;             // true = enable, false = disable
+    uint8_t hour24 = 0;                     // 0-23
+    bool ena_alrm_day = false;              // true = enable, false = disable
+    uint8_t day = 1;                        // 1-31 depending upon month
+    bool ena_alrm_weekday = false;          // true = enable, false = disable
+    DayOfWeek weekday = DayOfWeek::Sunday;  // Sunday-Saturday
 
     // Compare two AlarmTimes
-    inline bool operator==(const AlarmTime &rhs) {
-        return (this->ena_alrm_second == rhs.ena_alrm_second) && (this->second == rhs.second)
-               && (this->ena_alrm_minute == rhs.ena_alrm_minute) && (this->minute == rhs.minute)
-               && (this->ena_alrm_hour == rhs.ena_alrm_hour) && (this->hour24 == rhs.hour24)
-               && (this->ena_alrm_day == rhs.ena_alrm_day) && (this->day == rhs.day)
-               && (this->ena_alrm_weekday == rhs.ena_alrm_weekday) && (this->weekday == rhs.weekday);
-    }
+    inline bool operator==(const AlarmTime &rhs);
 
     // Print AlarmTime
-    friend std::ostream &operator<<( std::ostream &output, const AlarmTime &alarm_time ) {
-        output << +alarm_time.second << " seconds," << (alarm_time.ena_alrm_second ? " enabled \n" : " disabled \n")
-               << +alarm_time.minute << " minutes," << (alarm_time.ena_alrm_minute ? " enabled \n" : " disabled \n")
-               << +alarm_time.hour24 << " hours, " << (alarm_time.ena_alrm_hour ? " enabled \n" : " disabled \n")
-               << "day: " << +alarm_time.day << (alarm_time.ena_alrm_day ? ", enabled \n" : ", disabled \n")
-               << "weekday: " << DayOfWeekStrings[static_cast<uint8_t>(alarm_time.weekday)] << (alarm_time.ena_alrm_weekday ? ", enabled \n" : ", disabled \n");
-        return output;
-    }
+    friend std::ostream &operator<<( std::ostream &output, const AlarmTime &time );
 };
 
 /// BCD to decimal

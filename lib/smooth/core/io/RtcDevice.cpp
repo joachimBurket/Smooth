@@ -16,6 +16,10 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+#include <cstdint>
+#include <string>
+#include <iostream>
+
 #include "smooth/core/io/RtcDevice.h"
 #include "smooth/core/logging/log.h"
 
@@ -24,6 +28,66 @@ using namespace smooth::core::logging;
 namespace smooth::core::io::rtc {
 
 static const char* TAG = "RtcDevice";
+
+// Compare two RtcTimes
+bool RtcTime::operator==(const RtcTime &rhs) {
+    return (this->seconds == rhs.seconds) && (this->minutes == rhs.minutes)
+        && (this->hours24 == rhs.hours24) && (this->days == rhs.days)
+        && (this->weekdays == rhs.weekdays) && (this->months == rhs.months)
+        && (this->years == rhs.years);
+}
+
+// Print RtcTime
+std::ostream &operator<<( std::ostream &output, const RtcTime &time ) {
+    output << DayOfWeekStrings[static_cast<uint8_t>(time.weekdays)] << " " << +time.days << " "
+    << MonthStrings[static_cast<uint8_t>(time.months)] << " " << time.years << ", "
+    << +time.hours24 << "h" << +time.minutes << "m" << +time.seconds << "s";
+    return output;
+}
+
+// Compare two AlarmTimes
+bool AlarmTime::operator==(const AlarmTime &rhs) {
+    return (this->ena_alrm_second == rhs.ena_alrm_second) && (this->second == rhs.second)
+            && (this->ena_alrm_minute == rhs.ena_alrm_minute) && (this->minute == rhs.minute)
+            && (this->ena_alrm_hour == rhs.ena_alrm_hour) && (this->hour24 == rhs.hour24)
+            && (this->ena_alrm_day == rhs.ena_alrm_day) && (this->day == rhs.day)
+            && (this->ena_alrm_weekday == rhs.ena_alrm_weekday) && (this->weekday == rhs.weekday);
+}
+
+// Print AlarmTime
+std::ostream &operator<<( std::ostream &output, const AlarmTime &time ) {
+    int alarm_mask =    static_cast<int>(time.ena_alrm_second) 
+                            + (static_cast<int>(time.ena_alrm_minute) << 1) 
+                            + (static_cast<int>(time.ena_alrm_hour) << 2) 
+                            + (static_cast<int>(time.ena_alrm_day) << 3)
+                            + (static_cast<int>(time.ena_alrm_weekday) << 4);
+
+    Log::info("Alarm_mask = {}", alarm_mask);
+
+    switch(alarm_mask) {
+        case 0: 
+            output << "once per second";
+            break;
+        case 1: 
+            output << "each minute when " << +time.second << "sec match";
+            break;
+        case 3:
+            output << "each hour when " << +time.minute << "min " << +time.second << "sec match";
+            break;
+        case 7:
+            output << "each day at " << +time.hour24 << "h" << +time.minute << "m" << +time.second << "s";
+            break;
+        case 15: 
+            output << "each month the " << +time.day << "th at " << +time.hour24 << "h" << +time.minute << "m" << +time.second << "s";
+            break;
+        case 23: 
+            output << "each " << DayOfWeekStrings[static_cast<uint8_t>(time.weekday)] << " at " << +time.hour24 << "h" << +time.minute << "m" << +time.second << "s";
+            break;
+        default: 
+            Log::warning("Alarm_mask value incorrect: {}", alarm_mask);
+    }   
+    return output;
+}
 
 // Convert BCD to decimal
 uint8_t bcd_to_decimal(uint8_t bcd) {
