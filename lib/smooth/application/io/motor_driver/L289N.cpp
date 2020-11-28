@@ -14,21 +14,11 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-#pragma once
 
-#include "smooth/core/io/Output.h"
-#include "smooth/core/io/Input.h"
+#include "smooth/application/io/motor_driver/L289N.h"
 
 namespace smooth::application::io
 {
-    class L289
-    {
-        public:
-        
+    
 
-        private:
-            //Output IN1;
-            //Output IN2; 
-            //Input sense_a;
-    };
 }
