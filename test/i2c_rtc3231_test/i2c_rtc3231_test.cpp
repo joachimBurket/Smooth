@@ -58,6 +58,8 @@ limitations under the License.
  * I (3846351) APP: The Alarm Active Count = 2
  ****************************************************************************************/
 #include <vector>
+#include <string>
+#include <sstream>  
 #include "i2c_rtc3231_test.h"
 #include "smooth/core/logging/log.h"
 #include "smooth/core/SystemStatistics.h"
@@ -91,8 +93,8 @@ namespace i2c_rtc3231_test
         {
             get_time();     // get rtc time. If device haven't any battery, the 'Oscillator stopped` flag should be ON
             set_time();
-            set_alarm1();
             rtc3231->clear_alarm1_flag();
+            set_alarm1();
             set_alarm2();
             rtc3231->clear_alarm2_flag();
         }
@@ -146,8 +148,7 @@ namespace i2c_rtc3231_test
     {
         Log::info(TAG, "********** Setting Time *********");
         rtc::RtcTime tm;
-        tm.seconds = 0;
-        tm.minutes = 10;
+        tm.minutes = 11;
         tm.hours24 = 13;
         tm.days = 25;
         tm.weekdays = rtc::DayOfWeek::Tuesday;
@@ -167,7 +168,6 @@ namespace i2c_rtc3231_test
 
         if (rtc3231->get_rtc_time(tm))
         {
-            // Tue 25 Feb 2020 - 1:08:00 PM
             Log::info(TAG, "Time = {} {} {} {} - {} ",
                       rtc::DayOfWeekStrings[static_cast<int>(tm.weekdays)],
                       tm.days,
@@ -186,11 +186,13 @@ namespace i2c_rtc3231_test
     {
         Log::info(TAG, "********** Setting Alarm1 *********");
         rtc::AlarmTime tm;
+        tm.second = 10;
         tm.minute = 12;
         tm.hour24 = 13;
         tm.day = 25;
         tm.weekday = rtc::DayOfWeek::Tuesday;
-        tm.ena_alrm_minute = true;
+        tm.ena_alrm_second = true;
+        tm.ena_alrm_minute = false;
         tm.ena_alrm_hour = false;
         tm.ena_alrm_day = false;
         tm.ena_alrm_weekday = false;
@@ -208,9 +210,9 @@ namespace i2c_rtc3231_test
 
         if (rtc3231->get_alarm1_time(tm))
         {
-            // Tue 25 - 1:12:00 PM
-            Log::info(TAG, "Alarm1 set for -> {} ",
-                      rtc::get_12hr_time_string(tm.hour24, tm.minute, 0));
+            std::stringstream ss; 
+            ss << tm;
+            Log::info(TAG, "Alarm1: {} ", ss.str());
         }
         else
         {
@@ -260,9 +262,9 @@ namespace i2c_rtc3231_test
 
         if (rtc3231->get_alarm2_time(tm))
         {
-            // Tue 25 - 1:13:00 PM
-            Log::info(TAG, "Alarm2 set for -> {} ",
-                      rtc::get_12hr_time_string(tm.hour24, tm.minute, 0));
+            std::stringstream ss; 
+            ss << tm;
+            Log::info(TAG, "Alarm2: {} ", ss.str());
         }
         else
         {
