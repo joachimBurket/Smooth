@@ -27,14 +27,13 @@ namespace l289n_test
 {
     static const char* TAG = "APP";
 
-    App::App() : Application(APPLICATION_BASE_PRIO, seconds(60))
+    App::App() : Application(APPLICATION_BASE_PRIO, seconds(10))
     {
     }
 
     void App::init()
     {
         Application::init();
-
     }
 
     void App::tick()
@@ -43,6 +42,16 @@ namespace l289n_test
         SystemStatistics::instance().dump();
         Log::info(TAG, "........................................" );
 
-       
+        if((count % 2) == 0) {
+            Log::info(TAG, "starting in direction {}", direction);
+            direction = !direction;
+            l289n.start(direction, 1);
+        }
+        else {
+            Log::info(TAG, "stopping");
+            l289n.stop();
+        }
+
+        count++;
     }
 }

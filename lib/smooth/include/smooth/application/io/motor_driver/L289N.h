@@ -17,6 +17,10 @@ limitations under the License.
 
 #pragma once
 
+#include <driver/gpio.h>
+#include "smooth/core/io/Output.h"
+#include "smooth/core/io/Input.h"
+
 namespace smooth::application::io
 {
     class L289N
@@ -24,16 +28,16 @@ namespace smooth::application::io
         public:
             L289N(gpio_num_t en_pin, gpio_num_t in1_pin, gpio_num_t in2_pin, gpio_num_t sens_pin);
 
-            void start(int direction, uint8_t speed);
+            void start(uint8_t direction, uint8_t speed);
 
             void set_speed(uint8_t speed);
 
             void stop();
 
         private:
-            //Output EN;
-            //Output IN1;
-            //Output IN2; 
-            //Input SENS;
+            smooth::core::io::Output en_pin;
+            smooth::core::io::Output in1_pin;
+            smooth::core::io::Output in2_pin;
+            smooth::core::io::Input sens_pin;       // TODO: create AnalogInput class? 
     };
 }

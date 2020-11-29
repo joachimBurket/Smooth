@@ -19,6 +19,54 @@ limitations under the License.
 
 namespace smooth::application::io
 {
+    static const char* TAG = "L289N";
+    static const bool PIN_HIGH = true;
+    static const bool PIN_LOW = false;
     
+    L289N::L289N(gpio_num_t en, gpio_num_t in1, gpio_num_t in2, gpio_num_t sens): 
+        en_pin(en, true, false, true),
+        in1_pin(in1, true, false, true),
+        in2_pin(in2, true, false, true),
+        sens_pin(sens)
+    {
+    }
 
+    void L289N::start(uint8_t direction, uint8_t speed) 
+    {
+        // set speed (TODO: PWM)
+        en_pin.set(PIN_HIGH);
+        
+        // reset directions 
+        in1_pin.clr();
+        in2_pin.clr();
+
+        // set direction
+        if(direction) {
+            in1_pin.set(PIN_HIGH);
+        }
+        else {
+            in2_pin.set(PIN_HIGH);
+        }
+    }
+
+    void L289N::set_speed(uint8_t speed)
+    {
+        // TODO: For now only ON-OFF => use PWM 
+        if(speed) {
+            en_pin.set(PIN_HIGH);
+        }
+        else {
+            en_pin.clr();
+        }
+    }
+
+    void L289N::stop()
+    {
+        // set speed to 0
+        en_pin.clr();
+        
+        // reset directions 
+        in1_pin.clr();
+        in2_pin.clr();
+    }
 }

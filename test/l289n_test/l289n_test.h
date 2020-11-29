@@ -28,10 +28,13 @@ namespace l289n_test
 
             void tick() override;
 
-            
+            /// Creates an instance of the motor driver
+            void init_l289n();
 
         private:
 
-            //std::unique_ptr<smooth::application::sensor::PCF8563> rtc8563{}; TODO: Unique pointer for the l289n ? 
+            smooth::application::io::L289N l289n{GPIO_NUM_25, GPIO_NUM_33, GPIO_NUM_32, GPIO_NUM_34};
+            uint8_t direction = 0;
+            uint8_t count = 0;
     };
 }
