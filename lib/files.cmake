@@ -14,6 +14,7 @@ set(SMOOTH_SOURCES
         ${smooth_dir}/application/io/i2c/DHT12.cpp
         ${smooth_dir}/application/io/i2c/AxpPMU.cpp
         ${smooth_dir}/application/io/i2c/PCF8563.cpp
+        ${smooth_dir}/application/io/i2c/DS3231.cpp
         ${smooth_dir}/application/io/spi/BME280SPI.cpp
         ${smooth_dir}/application/io/spi/BME280Core.cpp
         ${smooth_dir}/application/io/wiegand/Wiegand.cpp
@@ -93,6 +94,7 @@ set(SMOOTH_SOURCES
         ${smooth_dir}/core/network/Wifi.cpp
         ${smooth_dir}/core/sntp/Sntp.cpp
         ${smooth_dir}/core/SystemStatistics.cpp
+        ${smooth_dir}/core/io/RtcDevice.cpp
         ${smooth_dir}/core/Task.cpp
         ${smooth_dir}/core/timer/ElapsedTime.cpp
         ${smooth_dir}/core/timer/Timer.cpp
@@ -114,6 +116,7 @@ set(SMOOTH_SOURCES
         ${smooth_inc_dir}/application/io/i2c/AxpRegisters.h
         ${smooth_inc_dir}/application/io/i2c/PCF8563.h
         ${smooth_inc_dir}/application/io/motor_driver/L289N.h
+        ${smooth_inc_dir}/application/io/i2c/DS3231.h
         ${smooth_inc_dir}/application/network/http/HTTPProtocol.h
         ${smooth_inc_dir}/application/network/http/HTTPServer.h
         ${smooth_inc_dir}/application/network/http/HTTPServerClient.h
@@ -188,6 +191,7 @@ set(SMOOTH_SOURCES
         ${smooth_inc_dir}/core/network/Wifi.h
         ${smooth_inc_dir}/core/sntp/Sntp.h
         ${smooth_inc_dir}/core/sntp/TimeSyncEvent.h
+        ${smooth_inc_dir}/core/io/RtcDevice.h
         ${smooth_inc_dir}/core/SystemStatistics.h
         )
 
